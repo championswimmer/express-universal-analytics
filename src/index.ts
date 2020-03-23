@@ -2,72 +2,44 @@
  * Created by championswimmer on 05/01/17.
  */
 
+import { NextFunction, Request, RequestHandler, Response } from 'express-serve-static-core'
 import * as ua from 'universal-analytics'
-import {Request, Response, RequestHandler, NextFunction} from 'express'
-declare module 'express' {
+import { Visitor } from 'universal-analytics'
+declare module 'express-serve-static-core' {
   export interface Request {
-    ga: {
-        event: (options: GAEventOptions, emitted: (e: Error) => void) => void
-    }
+    visitor: Visitor
   }
 }
 
+export interface ReqToUserId { (req: Request): string }
 
-export interface ExpressGAHandler extends RequestHandler {
-  event: (options: GAEventOptions) => RequestHandler
-}
-export interface GAEventOptions {
-  category: string
-  action: string
-  label?: string
-  value?: string | number
-}
+function ExpressGA(uaCode: string, cookieName?: string, reqToUserId?: ReqToUserId): RequestHandler {
+  let middlewareOpts = { cookieName: cookieName || '_ga' }
+  let middleware = ua.middleware(uaCode, middlewareOpts)
 
-
-export function ExpressGA(uaCode: string): ExpressGAHandler {
-  let visitor = ua(uaCode);
-
-  function GAEventMiddleware (options: GAEventOptions): RequestHandler {
-
-    return <RequestHandler> function (req: Request, res: Response, next: NextFunction) {
-      visitor.event(options.category, options.action, options.label, options.value).send()
-      next()
-    }
-  }
-
-  function GAEventEmitter (options: GAEventOptions, emitted: (e: Error) => void) {
-    visitor.event(
-      options.category,
-      options.action,
-      options.label,
-      options.value,
-      (err: Error) => emitted ? emitted(err) : null
-    )
-  }
-
-  let middleware = <ExpressGAHandler> function (req: Request, res: Response, next: NextFunction) {
+  async function middlewareWrapper(req: Request, res: Response, next: NextFunction) {
+    middleware(req, res, next)
     if (!req.headers['x-forwarded-for']) {
       req.headers['x-forwarded-for'] = '0.0.0.0'
     }
-    visitor.pageview({
+    if (reqToUserId && typeof reqToUserId === 'function') {
+      const userId = reqToUserId(req)
+      req.visitor.set('user_id', userId)
+      req.visitor.set('uid', userId)
+      req.visitor.set('userId', userId)
+    }
+    req.visitor.pageview({
       dp: req.originalUrl,
       dr: req.get('Referer'),
       ua: req.headers['user-agent'],
-      uip: req.connection.remoteAddress
-      || req.socket.remoteAddress
-      || req.connection.remoteAddress
-      || (<string>req.headers['x-forwarded-for']).split(',').pop()
-    }).send();
-    req.ga = {
-        event: GAEventEmitter
-    }
-    next();
-  };
+      uip: (req.connection.remoteAddress
+        || req.socket.remoteAddress
+        || req.connection.remoteAddress
+        || (<string>req.headers['x-forwarded-for']).split(',').pop())
+    })
+  }
 
-  middleware.event = GAEventMiddleware
-
-
-  return middleware;
+  return middlewareWrapper
 }
 
 module.exports = ExpressGA

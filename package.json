@@ -1,5 +1,5 @@
 {
-  "name": "express-ga-middleware",
+  "name": "express-universal-analytics",
   "version": "0.1.6",
   "description": "Express middleware for Google Universal Analytics",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/championswimmer/express-ga-middleware.git"
+    "url": "git+ssh://git@github.com/championswimmer/express-universal-analytics.git"
   },
   "keywords": [
     "express",
@@ -21,15 +21,22 @@
   "author": "Arnav Gupta <arnav@codingblocks.com>",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/championswimmer/express-ga-middleware/issues"
+    "url": "https://github.com/championswimmer/express-universal-analytics/issues"
   },
-  "homepage": "https://github.com/championswimmer/express-ga-middleware#readme",
+  "homepage": "https://github.com/championswimmer/express-universal-analytics#readme",
   "dependencies": {
-    "universal-analytics": "^0.4.15"
+    "universal-analytics": "^0.4.20"
   },
   "devDependencies": {
-    "@types/express": "4",
-    "express": "4",
-    "typescript": "2.5"
+    "@types/express": "^4.17.3",
+    "@types/express-session": "^1.17.0",
+    "@types/node": "10",
+    "@types/universal-analytics": "^0.4.4",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "typescript": "^3.8.3"
+  },
+  "engines": {
+    "node": ">= 10"
   }
 }

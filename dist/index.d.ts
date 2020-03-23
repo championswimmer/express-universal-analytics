@@ -1,20 +1,15 @@
-/// <reference types="express" />
-import { RequestHandler } from 'express';
-declare module 'express' {
+/**
+ * Created by championswimmer on 05/01/17.
+ */
+import { Request, RequestHandler } from 'express-serve-static-core';
+import { Visitor } from 'universal-analytics';
+declare module 'express-serve-static-core' {
     interface Request {
-        ga: {
-            event: (options: GAEventOptions, emitted: (e: Error) => void) => void;
-        };
+        visitor: Visitor;
     }
 }
-export interface ExpressGAHandler extends RequestHandler {
-    event: (options: GAEventOptions) => RequestHandler;
+export interface ReqToUserId {
+    (req: Request): string;
 }
-export interface GAEventOptions {
-    category: string;
-    action: string;
-    label?: string;
-    value?: string | number;
-}
-export declare function ExpressGA(uaCode: string): ExpressGAHandler;
+declare function ExpressGA(uaCode: string, cookieName?: string, reqToUserId?: ReqToUserId): RequestHandler;
 export default ExpressGA;
