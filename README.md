@@ -76,8 +76,10 @@ app.get('/somepage', (req, res) => {
   // set it to visitor
   req.visitor.setUid(userId)
 
-})
+  res.send('Whatever it is')
 
+})
+```
 
 
 ### Custom Events
