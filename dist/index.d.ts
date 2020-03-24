@@ -10,7 +10,7 @@ declare module 'express' {
 }
 declare module 'universal-analytics' {
     interface Visitor {
-        setUid(uid: string): void;
+        setUid(uid?: string): void;
     }
 }
 export interface ReqToUserId {
