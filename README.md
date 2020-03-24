@@ -1,4 +1,4 @@
-# Express GA Middleware
+# Express Universal Analytics
 
 This is an [express](http://expressjs.com) middleware to enable
 [Google Universal Analytics](http://analytics.google.com)
@@ -22,52 +22,36 @@ npm install --save express-ga-middleware
 To simply track page views use this -
 
 ```javascript
-const app = require('express')();
-const expressGa = require('express-ga-middleware');
+import * as express from 'express'
+import { Request } from 'express'
+import ExpressGA from '../dist'
 
-app.use(expressGa('UA-XXXXXX-X'));
+const app = express();
 
-app.get('/', function (req, res) { res.send('hello world') } );
+app.use(ExpressGA('UA-XXXXXXX-X'));
 
-app.listen(4040);
-```
-
-
-If you also want to generate events, we have a .event() middleware too.
-```js
-var expGa = expressGa('UA-XXXXXX-X');
-
-//Use globally for all pageviews
-app.use(expGa);
-
-//Use event on a path
-app.use('/path/of/event', expGa.event({
-    category: 'cat',
-    action: 'act',
-    label: 'lab',
-    value: 3.5
-}),
-    function (req, res) {
-    //your path middleware code here
-});
-```
-
-The .event() function is available in the `req` object too, 
-inside `ga` object.
-
-```js
-app.use(expressGa('UA-XXXXXX-X'));
-
-app.get('/', (req, res) => {
-  req.ga.event({
-      category: 'cat',
-      action: 'act',
-      label: 'lab',
-      value: 3.5
-  }, (err) => {
-    if (err) throw err
-  })
+app.get('/hello', (req, res) => {
   res.send('Hello World')
+})
+
+app.listen(4444)
+```
+
+
+If you also want to generate events, we have a `req.visitor` on which
+you can generate `screenview`, `pageview` and `events`
+```js
+app.get('/event', (req: Request, res) => {
+
+  req.visitor.event({
+    dp: req.originalUrl,
+    ea: 'visit',  // action
+    ec: 'route',  // category
+    el: 'sample', // label
+    ev: 1,        // value
+  })
+
+  res.send('Event handled')
 })
 ```
 

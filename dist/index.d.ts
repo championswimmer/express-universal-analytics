@@ -1,9 +1,9 @@
 /**
  * Created by championswimmer on 05/01/17.
  */
-import { Request, RequestHandler } from 'express-serve-static-core';
+import { Request, RequestHandler } from 'express';
 import { Visitor } from 'universal-analytics';
-declare module 'express-serve-static-core' {
+declare module 'express' {
     interface Request {
         visitor: Visitor;
     }

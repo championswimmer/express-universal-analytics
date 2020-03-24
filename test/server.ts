@@ -2,16 +2,25 @@
  * Created by championswimmer on 06/07/17.
  */
 import * as express from 'express'
-import { ExpressGA } from '../dist'
-import {Application} from 'express-serve-static-core'
+import { Request } from 'express'
+import ExpressGA from '../dist'
 
-const app: Application =  express();
+const app = express();
 
 app.use(ExpressGA('UA-XXXXXXX-X'));
 
-app.get('/event', ExpressGA('UA-XXXXXXX-X').event({
-  category: "cat", action: "act", label: "lab", value: 10
-}))
+app.get('/event', (req: Request, res) => {
+
+  req.visitor.event({
+    dp: req.originalUrl,
+    ea: 'visit',  // action
+    ec: 'route',  // category
+    el: 'sample', // label
+    ev: 1,        // value
+  })
+
+  res.send('Event handled')
+})
 
 
 

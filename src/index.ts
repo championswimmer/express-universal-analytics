@@ -1,11 +1,10 @@
 /**
  * Created by championswimmer on 05/01/17.
  */
-
-import { NextFunction, Request, RequestHandler, Response } from 'express-serve-static-core'
+import { Request, RequestHandler, NextFunction, Response } from 'express' 
 import * as ua from 'universal-analytics'
 import { Visitor } from 'universal-analytics'
-declare module 'express-serve-static-core' {
+declare module 'express' {
   export interface Request {
     visitor: Visitor
   }
