@@ -8,6 +8,11 @@ declare module 'express' {
         visitor: Visitor;
     }
 }
+declare module 'universal-analytics' {
+    interface Visitor {
+        setUid(uid: string): void;
+    }
+}
 export interface ReqToUserId {
     (req: Request): string;
 }

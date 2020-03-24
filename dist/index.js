@@ -15,24 +15,43 @@ function ExpressGA(uaCode, cookieName, reqToUserId) {
     let middleware = ua.middleware(uaCode, middlewareOpts);
     function middlewareWrapper(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            middleware(req, res, next);
-            if (!req.headers['x-forwarded-for']) {
-                req.headers['x-forwarded-for'] = '0.0.0.0';
-            }
-            if (reqToUserId && typeof reqToUserId === 'function') {
-                const userId = reqToUserId(req);
-                req.visitor.set('user_id', userId);
-                req.visitor.set('uid', userId);
-                req.visitor.set('userId', userId);
-            }
-            req.visitor.pageview({
-                dp: req.originalUrl,
-                dr: req.get('Referer'),
-                ua: req.headers['user-agent'],
-                uip: (req.connection.remoteAddress
-                    || req.socket.remoteAddress
-                    || req.connection.remoteAddress
-                    || req.headers['x-forwarded-for'].split(',').pop())
+            // call the universal-analytic lib's middleware
+            middleware(req, res, () => {
+                req.visitor.setUid = function (uid) {
+                    if (req.session)
+                        req.session.gauid = uid;
+                };
+                if (!req.headers['x-forwarded-for']) {
+                    req.headers['x-forwarded-for'] = '0.0.0.0';
+                }
+                if (reqToUserId && typeof reqToUserId === 'function') {
+                    // if reqToUserId function exists use it to generate uid
+                    const userId = reqToUserId(req);
+                    if (userId)
+                        req.visitor.set('uid', userId);
+                }
+                else {
+                    // else if it was in session pick it
+                    req.visitor.set('uid', (req.session && req.session.gauid));
+                }
+                req.visitor.set('dh', req.protocol + '://' + req.get('host'));
+                if (req.query['utm_source'])
+                    req.visitor.set('cs', req.query['utm_source']);
+                if (req.query['utm_medium'])
+                    req.visitor.set('cm', req.query['utm_medium']);
+                if (req.query['utm_campaign'])
+                    req.visitor.set('cn', req.query['utm_campaign']);
+                next(); // actually call next now
+                // pageview in side effects
+                req.visitor.pageview({
+                    dp: req.originalUrl,
+                    dr: req.get('Referer'),
+                    ua: req.headers['user-agent'],
+                    uip: (req.connection.remoteAddress
+                        || req.socket.remoteAddress
+                        || req.connection.remoteAddress
+                        || req.headers['x-forwarded-for'].split(',').pop())
+                }).send();
             });
         });
     }

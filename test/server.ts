@@ -11,6 +11,8 @@ app.use(ExpressGA('UA-XXXXXXX-X'));
 
 app.get('/event', (req: Request, res) => {
 
+  req.visitor.setUid('1123')
+
   req.visitor.event({
     dp: req.originalUrl,
     ea: 'visit',  // action
