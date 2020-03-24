@@ -8,7 +8,7 @@ events.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-declared-blue.svg)](https://typescriptlang.org/)
 
-[![NPM](https://nodei.co/npm/express-ga-middleware.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/express-ga-middleware/)
+[![NPM](https://nodei.co/npm/express-universal-analytics.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/express-universal-analytics/)
 
 ## Install
 
