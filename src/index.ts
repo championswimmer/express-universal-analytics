@@ -12,15 +12,30 @@ declare module 'express' {
 
 declare module 'universal-analytics' {
   export interface Visitor {
-    setUid (uid?: string): void
+    setUid(uid?: string): void
   }
 }
 
 export interface ReqToUserId { (req: Request): string }
 
-function ExpressGA(uaCode: string, cookieName?: string, reqToUserId?: ReqToUserId): RequestHandler {
-  let middlewareOpts = { cookieName: cookieName || '_ga' }
-  let middleware = ua.middleware(uaCode, middlewareOpts)
+interface ExpressGAParams {
+  uaCode: string
+  cookieName?: string
+  reqToUserId?: ReqToUserId
+  autoTrackPages?: boolean
+}
+function ExpressGA(uaCode: string): RequestHandler
+function ExpressGA(params: ExpressGAParams): RequestHandler
+function ExpressGA(params: ExpressGAParams | string): RequestHandler {
+  if (typeof params === 'string') {
+    params = <ExpressGAParams>{uaCode: params}
+  }
+  if (!params.uaCode) {
+    throw new Error('Cannot initialise ExpressGA without uaCode')
+  }
+
+  let middlewareOpts = { cookieName: params.cookieName || '_ga' }
+  let middleware = ua.middleware(params.uaCode, middlewareOpts)
 
   async function middlewareWrapper(req: Request, res: Response, next: NextFunction) {
     // call the universal-analytic lib's middleware
@@ -28,14 +43,15 @@ function ExpressGA(uaCode: string, cookieName?: string, reqToUserId?: ReqToUserI
 
       req.visitor.setUid = function (uid?: string) {
         if (req.session) req.session.gauid = uid
+        else req.visitor.set('uid', uid)
       }
-      
+
       if (!req.headers['x-forwarded-for']) {
         req.headers['x-forwarded-for'] = '0.0.0.0'
       }
-      if (reqToUserId && typeof reqToUserId === 'function') {
+      if ((params as ExpressGAParams).reqToUserId && typeof (params as ExpressGAParams).reqToUserId === 'function') {
         // if reqToUserId function exists use it to generate uid
-        const userId = reqToUserId(req)
+        const userId = (params as ExpressGAParams).reqToUserId(req)
         if (userId) req.visitor.set('uid', userId)
       } else {
         // else if it was in session pick it
@@ -49,17 +65,18 @@ function ExpressGA(uaCode: string, cookieName?: string, reqToUserId?: ReqToUserI
 
       next() // actually call next now
 
-
-      // pageview in side effects
-      req.visitor.pageview({
-        dp: req.originalUrl,
-        dr: req.get('Referer'),
-        ua: req.headers['user-agent'],
-        uip: (req.connection.remoteAddress
-          || req.socket.remoteAddress
-          || req.connection.remoteAddress
-          || (<string>req.headers['x-forwarded-for']).split(',').pop())
-      }).send()
+      if ((params as ExpressGAParams).autoTrackPages !== false) { // if absent, treat true
+        // pageview in side effects
+        req.visitor.pageview({
+          dp: req.originalUrl,
+          dr: req.get('Referer'),
+          ua: req.headers['user-agent'],
+          uip: (req.connection.remoteAddress
+            || req.socket.remoteAddress
+            || req.connection.remoteAddress
+            || (<string>req.headers['x-forwarded-for']).split(',').pop())
+        }).send()
+      }
     })
 
   }

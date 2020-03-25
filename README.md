@@ -25,7 +25,7 @@ To simply track page views use this -
 ```javascript
 import * as express from 'express'
 import { Request } from 'express'
-import ExpressGA from '../dist'
+import ExpressGA from 'express-universal-analytics'
 
 const app = express();
 
@@ -46,27 +46,33 @@ by acquiring the session from the frontend cookie.
 
 ```js
 // GA on frontend uses a cookie called '_ga`
-app.use(ExpressGA('UA-XXXXX-X', '_ga'))
+app.use(ExpressGA({
+  uaCode: 'UA-XXXX-X',
+  autoTrackPages: false,
+  cookieName: '_ga',
+}))
 ```
 If you pass something else instead of `_ga` (not recommended) in cookie name, we will make our own separate cookie
 and not use GTag one. 
+Setting `autoTrackPages` to false will not track pageviews automatically
+_this is something you might want to do if you're adding it to API routes_
 
 Also to set userid, there are two ways. If you have a way to extract userid from req object, then pass 
 a reqToUserId function. 
 
 ```js 
-app.use(ExpressGA(
-  'UA-XXXX-XX', // ga id
-  '_ga', // cookie name
-  (req) => req.user && req.user.id // extract user id from request
-))
+app.use(ExpressGA({
+  uaCode: 'UA-XXXX-XX', // ga id
+  cookieName: '_ga', // cookie name
+  reqToUserId: (req) => req.user && req.user.id // extract user id from request
+}))
 ```
 
 If you have the userid in your context somewhere else, (not in req object), 
 then do this instead 
 
 ```js
-app.use(ExpressGA('UA-XXXXX-X', '_ga'))
+app.use(ExpressGA('UA-XXXXX-X'))
 
 app.get('/somepage', (req, res) => {
 

@@ -16,5 +16,12 @@ declare module 'universal-analytics' {
 export interface ReqToUserId {
     (req: Request): string;
 }
-declare function ExpressGA(uaCode: string, cookieName?: string, reqToUserId?: ReqToUserId): RequestHandler;
+interface ExpressGAParams {
+    uaCode: string;
+    cookieName?: string;
+    reqToUserId?: ReqToUserId;
+    autoTrackPages?: boolean;
+}
+declare function ExpressGA(uaCode: string): RequestHandler;
+declare function ExpressGA(params: ExpressGAParams): RequestHandler;
 export default ExpressGA;

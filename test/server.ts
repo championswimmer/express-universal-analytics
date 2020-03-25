@@ -9,6 +9,11 @@ const app = express();
 
 app.use(ExpressGA('UA-XXXXXXX-X'));
 
+ExpressGA({
+  uaCode: 'UA-XXXX-X',
+  autoTrackPages: false,
+})
+
 app.get('/event', (req: Request, res) => {
 
   req.visitor.setUid('1123')

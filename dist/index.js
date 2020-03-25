@@ -10,9 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ua = require("universal-analytics");
-function ExpressGA(uaCode, cookieName, reqToUserId) {
-    let middlewareOpts = { cookieName: cookieName || '_ga' };
-    let middleware = ua.middleware(uaCode, middlewareOpts);
+function ExpressGA(params) {
+    if (typeof params === 'string') {
+        params = { uaCode: params };
+    }
+    if (!params.uaCode) {
+        throw new Error('Cannot initialise ExpressGA without uaCode');
+    }
+    let middlewareOpts = { cookieName: params.cookieName || '_ga' };
+    let middleware = ua.middleware(params.uaCode, middlewareOpts);
     function middlewareWrapper(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             // call the universal-analytic lib's middleware
@@ -20,13 +26,15 @@ function ExpressGA(uaCode, cookieName, reqToUserId) {
                 req.visitor.setUid = function (uid) {
                     if (req.session)
                         req.session.gauid = uid;
+                    else
+                        req.visitor.set('uid', uid);
                 };
                 if (!req.headers['x-forwarded-for']) {
                     req.headers['x-forwarded-for'] = '0.0.0.0';
                 }
-                if (reqToUserId && typeof reqToUserId === 'function') {
+                if (params.reqToUserId && typeof params.reqToUserId === 'function') {
                     // if reqToUserId function exists use it to generate uid
-                    const userId = reqToUserId(req);
+                    const userId = params.reqToUserId(req);
                     if (userId)
                         req.visitor.set('uid', userId);
                 }
@@ -42,16 +50,18 @@ function ExpressGA(uaCode, cookieName, reqToUserId) {
                 if (req.query['utm_campaign'])
                     req.visitor.set('cn', req.query['utm_campaign']);
                 next(); // actually call next now
-                // pageview in side effects
-                req.visitor.pageview({
-                    dp: req.originalUrl,
-                    dr: req.get('Referer'),
-                    ua: req.headers['user-agent'],
-                    uip: (req.connection.remoteAddress
-                        || req.socket.remoteAddress
-                        || req.connection.remoteAddress
-                        || req.headers['x-forwarded-for'].split(',').pop())
-                }).send();
+                if (params.autoTrackPages !== false) { // if absent, treat true
+                    // pageview in side effects
+                    req.visitor.pageview({
+                        dp: req.originalUrl,
+                        dr: req.get('Referer'),
+                        ua: req.headers['user-agent'],
+                        uip: (req.connection.remoteAddress
+                            || req.socket.remoteAddress
+                            || req.connection.remoteAddress
+                            || req.headers['x-forwarded-for'].split(',').pop())
+                    }).send();
+                }
             });
         });
     }
