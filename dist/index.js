@@ -39,7 +39,8 @@ function ExpressGA(params) {
                 if (!req.headers['x-forwarded-for']) {
                     req.headers['x-forwarded-for'] = '0.0.0.0';
                 }
-                if (params.reqToUserId && typeof params.reqToUserId === 'function') {
+                if (params.reqToUserId &&
+                    typeof params.reqToUserId === 'function') {
                     // if reqToUserId function exists use it to generate uid
                     const userId = params.reqToUserId(req);
                     if (userId)
@@ -66,7 +67,7 @@ function ExpressGA(params) {
                         uip: (req.connection.remoteAddress
                             || req.socket.remoteAddress
                             || req.connection.remoteAddress
-                            || req.headers['x-forwarded-for'].split(',').pop())
+                            || req.headers['x-forwarded-for'].split(',').pop()),
                     }).send();
                 }
             });

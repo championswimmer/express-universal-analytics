@@ -3,7 +3,7 @@
   "version": "0.5.1",
   "description": "Express middleware for Google Universal Analytics",
   "main": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "tsc",
     "build": "tsc"
