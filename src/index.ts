@@ -4,7 +4,7 @@
 import { Request, RequestHandler, NextFunction, Response } from 'express'
 import * as ua from 'universal-analytics'
 
-export interface ReqToUserId { (req: Request): string }
+export interface ReqToUserId {(req: Request): string}
 
 interface ExpressGAParams {
   uaCode: string
@@ -12,9 +12,10 @@ interface ExpressGAParams {
   reqToUserId?: ReqToUserId
   autoTrackPages?: boolean
 }
-function ExpressGA(uaCode: string): RequestHandler
-function ExpressGA(params: ExpressGAParams): RequestHandler
-function ExpressGA(params: ExpressGAParams | string): RequestHandler {
+
+function ExpressGA (uaCode: string): RequestHandler
+function ExpressGA (params: ExpressGAParams): RequestHandler
+function ExpressGA (params: ExpressGAParams | string): RequestHandler {
   if (typeof params === 'string') {
     params = <ExpressGAParams>{ uaCode: params }
   }
@@ -25,7 +26,8 @@ function ExpressGA(params: ExpressGAParams | string): RequestHandler {
   let middlewareOpts = { cookieName: params.cookieName || '_ga' }
   let middleware = ua.middleware(params.uaCode, middlewareOpts)
 
-  async function middlewareWrapper(req: Request, res: Response, next: NextFunction) {
+  async function middlewareWrapper (
+    req: Request, res: Response, next: NextFunction) {
     // call the universal-analytic lib's middleware
     middleware(req, res, () => { // our pre-next wrapper
 
@@ -37,7 +39,8 @@ function ExpressGA(params: ExpressGAParams | string): RequestHandler {
       if (!req.headers['x-forwarded-for']) {
         req.headers['x-forwarded-for'] = '0.0.0.0'
       }
-      if ((params as ExpressGAParams).reqToUserId && typeof (params as ExpressGAParams).reqToUserId === 'function') {
+      if ((params as ExpressGAParams).reqToUserId &&
+        typeof (params as ExpressGAParams).reqToUserId === 'function') {
         // if reqToUserId function exists use it to generate uid
         const userId = (params as ExpressGAParams).reqToUserId(req)
         if (userId) req.visitor.set('uid', userId)
@@ -62,7 +65,7 @@ function ExpressGA(params: ExpressGAParams | string): RequestHandler {
           uip: (req.connection.remoteAddress
             || req.socket.remoteAddress
             || req.connection.remoteAddress
-            || (<string>req.headers['x-forwarded-for']).split(',').pop())
+            || (<string>req.headers['x-forwarded-for']).split(',').pop()),
         }).send()
       }
     })

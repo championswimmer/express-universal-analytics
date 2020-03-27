@@ -4,9 +4,9 @@
 import * as express from 'express'
 import ExpressGA from '../dist'
 
-const app = express();
+const app = express()
 
-app.use(ExpressGA('UA-XXXXXXX-X'));
+app.use(ExpressGA('UA-XXXXXXX-X'))
 
 ExpressGA({
   uaCode: 'UA-XXXX-X',
