@@ -3,16 +3,11 @@
  */
 import { Request, RequestHandler, NextFunction, Response } from 'express'
 import * as ua from 'universal-analytics'
-import { Visitor } from 'universal-analytics'
-declare module 'express' {
-  export interface Request {
-    visitor: Visitor
-  }
-}
 
-declare module 'universal-analytics' {
-  export interface Visitor {
-    setUid(uid?: string): void
+declare module 'express' {
+  interface Request {
+      visitor: ua.Visitor & {setUid(uid?: string): void}
+      session: any
   }
 }
 
@@ -28,7 +23,7 @@ function ExpressGA(uaCode: string): RequestHandler
 function ExpressGA(params: ExpressGAParams): RequestHandler
 function ExpressGA(params: ExpressGAParams | string): RequestHandler {
   if (typeof params === 'string') {
-    params = <ExpressGAParams>{uaCode: params}
+    params = <ExpressGAParams>{ uaCode: params }
   }
   if (!params.uaCode) {
     throw new Error('Cannot initialise ExpressGA without uaCode')
