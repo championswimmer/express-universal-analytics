@@ -4,13 +4,6 @@
 import { Request, RequestHandler, NextFunction, Response } from 'express'
 import * as ua from 'universal-analytics'
 
-declare module 'express' {
-  interface Request {
-      visitor: ua.Visitor & {setUid(uid?: string): void}
-      session: any
-  }
-}
-
 export interface ReqToUserId { (req: Request): string }
 
 interface ExpressGAParams {

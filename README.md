@@ -141,8 +141,8 @@ The middleware automatically tracks the following
 
 | Tracked parameter | Description |
 |-------------------|-------------|
-| **document host** | Host of your website with protocol - eg **http://cb.lk** |
-| **document path** | Part of the URL, after the domain name, i.e. **/b/c** in  http://a.com/b/c |
+| **document host** | Host of your website with protocol - eg **<http://cb.lk>** |
+| **document path** | Part of the URL, after the domain name, i.e. **/b/c** in  <http://a.com/b/c> |
 | **document referer** | The website from which the user came from, if any |
 | **user agent** | The device/browser/OS used to browse the page |
 | **ip address** | The user's ip Address|

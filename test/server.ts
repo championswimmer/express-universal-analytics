@@ -2,7 +2,6 @@
  * Created by championswimmer on 06/07/17.
  */
 import * as express from 'express'
-import { Request } from 'express'
 import ExpressGA from '../dist'
 
 const app = express();
@@ -14,7 +13,7 @@ ExpressGA({
   autoTrackPages: false,
 })
 
-app.get('/event', (req: Request, res) => {
+app.get('/event', (req, res) => {
 
   req.visitor.setUid('1123')
 

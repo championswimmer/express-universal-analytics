@@ -5,10 +5,12 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "declarationDir": "types",
     "declaration": true,
-    "typeRoots": ["types", "@types/express-session"]
+    "esModuleInterop": true
   },
   "include": ["src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "files": [
+    "types/express.d.ts"
+  ]
 }
