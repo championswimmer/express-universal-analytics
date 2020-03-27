@@ -16,6 +16,21 @@ events.
 npm install --save express-universal-analytics
 ```
 
+## Requirements
+
+### GA Cookie Reading
+
+- If you read GA cookie, then it is important your frontend actually is even sending it
+- If you're making AJAX calls, make sure it is `withCredentials`
+
+### Session
+
+- This needs session management to be able to save and persist the uid
+- Which means `req.session` must be available
+- Robust session management is not required, paltry memory-based sessions will work too
+- If `req.session` is not possible, then create a middleware that runs
+  before all of your `req.visitor.event` calls that would populate
+  `req.visitor.setUid` on every pass.
 
 ## Usage
 
