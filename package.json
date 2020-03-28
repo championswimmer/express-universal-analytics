@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/championswimmer/express-universal-analytics#readme",
   "dependencies": {
-    "universal-analytics": "^0.4.20",
-    "@types/express": "^4.17.3",
-    "@types/express-session": "^1.17.0",
-    "@types/universal-analytics": "^0.4.4"
+    "universal-analytics": "^0.4.20"
   },
   "devDependencies": {
     "@types/node": "10",
+    "@types/express": "^4.17.3",
+    "@types/express-session": "^1.17.0",
+    "@types/universal-analytics": "^0.4.4",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "typescript": "^3.8.3"
