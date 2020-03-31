@@ -1,7 +1,7 @@
 import * as ua from "universal-analytics";
 
-declare module 'express-serve-static-core' {
-    interface Request {
-        visitor: ua.Visitor & { setUid: (uid?: string) => void }
+declare module 'express' {
+    export interface Request {
+        visitor?: ua.Visitor & { setUid: (uid?: string) => void }
     }
 }
