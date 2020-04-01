@@ -4,6 +4,8 @@
 import { Request, RequestHandler, NextFunction, Response } from 'express'
 import * as ua from 'universal-analytics'
 
+import './express'
+
 export interface ReqToUserId {(req: Request): string}
 
 interface ExpressGAParams {

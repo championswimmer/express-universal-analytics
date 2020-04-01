@@ -6,11 +6,10 @@
     "sourceMap": true,
     "outDir": "dist",
     "declaration": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "declarationDir": "types"
   },
   "include": ["src"],
-  "exclude": ["node_modules"],
-  "files": [
-    "types/express.d.ts"
-  ]
+  "exclude": ["node_modules"]
 }

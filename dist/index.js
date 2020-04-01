@@ -17,6 +17,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ua = __importStar(require("universal-analytics"));
+require("./express");
 function ExpressGA(params) {
     if (typeof params === 'string') {
         params = { uaCode: params };
