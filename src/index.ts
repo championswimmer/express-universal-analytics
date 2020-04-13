@@ -51,7 +51,6 @@ function ExpressGA (params: ExpressGAParams | string): RequestHandler {
         req.visitor.set('uid', (req.session && req.session.gauid))
       }
 
-      req.visitor.set('dh', req.protocol + '://' + req.get('host'))
       if (req.query['utm_source']) req.visitor.set('cs', req.query['utm_source'])
       if (req.query['utm_medium']) req.visitor.set('cm', req.query['utm_medium'])
       if (req.query['utm_campaign']) req.visitor.set('cn', req.query['utm_campaign'])
@@ -60,6 +59,7 @@ function ExpressGA (params: ExpressGAParams | string): RequestHandler {
 
       if ((params as ExpressGAParams).autoTrackPages !== false) { // if absent, treat true
         // pageview in side effects
+        req.visitor.set('dh', req.protocol + '://' + req.get('host'))
         req.visitor.pageview({
           dp: req.originalUrl,
           dr: req.get('Referer'),
