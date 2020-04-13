@@ -12,6 +12,6 @@ interface ExpressGAParams {
     reqToUserId?: ReqToUserId;
     autoTrackPages?: boolean;
 }
-declare function ExpressGA(uaCode: string): RequestHandler;
-declare function ExpressGA(params: ExpressGAParams): RequestHandler;
+declare function ExpressGA(uaCode: string): Array<RequestHandler>;
+declare function ExpressGA(params: ExpressGAParams): Array<RequestHandler>;
 export default ExpressGA;
