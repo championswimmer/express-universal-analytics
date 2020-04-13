@@ -40,6 +40,8 @@ function ExpressGA (params: ExpressGAParams | string): Array<RequestHandler> {
     if (!req.headers['x-forwarded-for']) {
       req.headers['x-forwarded-for'] = '0.0.0.0'
     }
+
+    next()
   }
 
   let uaMiddleware = ua.middleware(params.uaCode, middlewareOpts)
